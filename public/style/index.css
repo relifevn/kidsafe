@@ -1,0 +1,175 @@
+/* @import url('https://fonts.googleapis.com/css?family=Bangers'); */
+
+body {
+    font-family: 'Raleway', sans-serif;
+    -webkit-animation: bgcolor 20s infinite;
+    animation: bgcolor 10s infinite;
+    -webkit-animation-direction: alternate;
+    animation-direction: alternate;
+}
+
+.center {
+    margin: auto;
+    margin-top: 20px;
+    width: 100%;
+}
+
+.centering {
+    text-align: center;
+    margin: auto;
+    width: 50%;
+}
+
+.roomIDInput {
+    text-align: center;
+    margin: auto;
+    width: 50%;
+    background-color: white;
+    border-radius: 0.5rem;
+
+    -webkit-box-shadow: 0px 10px 16px 1px rgba(0,0,0,0.65);
+    -moz-box-shadow: 0px 10px 16px 1px rgba(0,0,0,0.65);
+    box-shadow: 0px 10px 16px 1px rgba(0,0,0,0.65);
+
+    margin-bottom: 1rem;
+}
+
+.ButtonEnter {
+    display: block;
+    border-radius: 0.5rem;
+    text-align: center;
+    margin: auto;
+    width: 50%;
+    color: black;
+    background-color: white;
+    -webkit-box-shadow: 0px 10px 16px 1px rgba(0,0,0,0.65);
+    -moz-box-shadow: 0px 10px 16px 1px rgba(0,0,0,0.65);
+    box-shadow: 0px 10px 16px 1px rgba(0,0,0,0.65);
+}
+
+.ButtonEnter:hover {
+    background-color: lightgreen;
+    color: black;
+}
+
+.logo {
+    text-align: center;
+    color: black;
+    margin: auto;
+    font-size: 3rem;
+    font-weight: bold;
+    text-shadow: 0px 12px 17px rgba(0,0,0,0.85);
+}
+
+.footer {
+    position:fixed;
+    left:0px;
+    bottom:0px;
+    height:30px;
+    width:100%;
+    text-align: center;
+ }
+
+@keyframes bgcolor {
+    0% {
+        background-color: #47d666
+    }
+
+    30% {
+        background-color: #6cd654
+    }
+
+    60% {
+        background-color: #9ad04c
+    }
+
+    90% {
+        background-color: #c1df51
+    }
+
+    100% {
+        background-color: #cbdd6e
+    }
+}
+
+
+/* Small devices (landscape phones, 576px and up) */
+@media (min-width: 576px) {
+    
+}
+
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) {
+    .logo {
+        font-size: 5rem;
+    }
+
+    .roomIDInput {
+        font-size: 2rem;
+    }
+
+    .ButtonEnter {
+        font-size: 2rem;
+    }
+
+    .footer {
+        font-size: 1.3rem;
+    }
+}
+
+/* Large devices (desktops, 992px and up) */
+@media (min-width: 992px) {
+    .logo {
+        font-size: 7rem;
+    }
+
+    .roomIDInput {
+        font-size: 5rem;
+    }
+
+    .ButtonEnter {
+        font-size: 5rem;
+    }
+
+    .footer {
+        bottom: 1.3rem;
+        font-size: 2rem;
+    }
+}
+
+/* Extra large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {
+    .center {
+        margin-top: 10%;
+    }
+    .logo {
+        font-size: 8rem;
+    }
+
+    .roomIDInput {
+        width: 40%;
+        font-size: 2rem;
+    }
+
+    .ButtonEnter {
+        width: 40%;
+        font-size: 2rem;
+    }
+
+    .footer {
+        bottom: 1.3rem;
+        font-size: 2rem;
+    }
+}
+#myBtn { 
+    display:block; 
+    position:fixed; 
+    top:200px; 
+    right:-1px;
+}
+#myBtn:hover{background:#030;border:1px solid #030;}
+.btn-group-lg>.btn, .btn-lg{
+    float: right;    
+    background: #79c879;
+    color: white;
+}

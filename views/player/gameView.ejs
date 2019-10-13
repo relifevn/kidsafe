@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="vi">
+    <head>
+        <title>Player Game View</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <link rel="stylesheet" href="/style/player/gameView.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    </head>
+    <body>
+        <div id="init">
+            <h1 id="title1">You are in!</h1>
+            <h3 id="title2">See your nickname on screen</h3>
+            <div class="loader"></div>
+        </div>
+
+        <div id="playing"  style="display:None;">
+            <div class="pos-f-t">
+              <nav class="navbar navbar-dark bg-dark">
+                <div class="col-md-12 text-center">
+                <h1 class="h1" style="color:#fff;" id="questionNumber"></h1> 
+                </div>
+              </nav>
+            </div>
+            <div class="fixed-bottom" style="margin: 20px;">
+                <div class="row answers">
+                    <%# <div class="col-md-6 text-center answer"> %>
+                        <button id="A" name="singlebutton" class="btn btn-success ">A</button> 
+                    <%# </div> %>
+                    <%# <div class="col-md-6 text-center answer"> %>
+                        <button id="B" name="singlebutton" class="btn btn-info ">B</button> 
+                    <%# </div> %>
+                </div>
+                <div class="row answers">
+                    <%# <div class="col-md-6 text-center answer"> %>
+                        <button id="C" name="singlebutton" class="btn btn-warning ">C</button> 
+                    <%# </div> %>
+                    <%# <div class="col-md-6 text-center answer"> %>
+                        <button id="D" name="singlebutton" class="btn btn-danger ">D</button>
+                    <%# </div> %>
+                </div>
+            </div>
+            <br>
+        </div>
+
+        <div id="waiting" style="display: None;">
+            <h1 id="title1">You answered!</h1>
+            <h3 id="title2">Waiting for other players</h3>
+            <div class="loader"></div>
+        </div>
+        
+        <div class="wobble" id="result" style="display:None;">
+            <h1 id="answerStatus"></h1>
+            <h3 id="icon" class="fa fa-check fa-5x"> </h3>
+            <h3 id="points"></h3>
+            <h3 id="rank"></h3>
+        </div>
+
+        
+        <div id="endgame" style="display:None;">
+            <h1>End Game!</h1>
+            <button id="back" name="singlebutton" class="btn btn-primary">BACK TO HOME</button>
+        </div>
+        
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+
+    <script src="https://www.gstatic.com/firebasejs/5.9.3/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.9.3/firebase-auth.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+
+    <script>
+        // ...........................
+        // validate author, not yet
+        // ............................
+
+        const player = Cookies.get('player');
+        const roomID = Cookies.get('roomID');
+
+        var socket = io.connect();
+        var questionNumber = 0;
+
+        $("#A" ).click(answerQuestionA);
+        $("#B" ).click(answerQuestionB);
+        $("#C" ).click(answerQuestionC);
+        $("#D" ).click(answerQuestionD);
+
+        function playerCheckIn()
+        {
+            socket.emit('playerCheckIn',{
+                player:player,
+                roomID:roomID,
+            });
+        }
+
+        function switchToWaiting(){
+            $("#playing").hide();
+            $("#waiting").show();
+        }
+
+        function answerQuestionA()
+        {
+            switchToWaiting();
+            socket.emit('player',{
+                state: 1,
+                roomID:roomID,
+                player: player,
+                questionNumber:questionNumber.toString(),
+                answer:'a'
+            });
+        }
+
+        function answerQuestionB()
+        {
+            switchToWaiting();
+            socket.emit('player',{
+                state: 1,
+                roomID:roomID,
+                player: player,
+                questionNumber:questionNumber.toString(),
+                answer:'b'
+            });
+        }
+
+        function answerQuestionC()
+        {
+            switchToWaiting();
+            socket.emit('player',{
+                state: 1,
+                roomID:roomID,
+                player: player,
+                questionNumber:questionNumber.toString(),
+                answer:'c'
+            });
+        }
+
+        function answerQuestionD()
+        {
+            switchToWaiting();
+            socket.emit('player',{
+                state: 1,
+                roomID:roomID,
+                player: player,
+                questionNumber:questionNumber.toString(),
+                answer:'d'
+            });
+        }
+
+        socket.on('player',function(data){ 
+            console.log('[INFO] Receive a socket. State',data.state);
+            console.log('[INFO] Data: ', data)
+            var state =data.state; 
+
+            if(roomID == data.roomID){
+                if(state==1){
+                    $("#init").hide();
+                    $("#playing").show();
+                    $("#waiting").hide();
+                    $("#result").hide();
+                    questionNumber = data.questionNumber;
+                    $("#questionNumber").html("Question "+questionNumber);
+                }else if(state==2 || state == 3){
+
+                    $("#result").show();
+                    $("#playing").hide();
+                    $("#waiting").hide();
+
+                    if (data.players[player].answerStatus != "correct") {
+                        $("#result").addClass("incorrect");
+                        $("#icon").addClass("fa-times");
+                        $("#icon").removeClass("fa-check");
+                    }
+                    else {
+                        $("#result").removeClass("incorrect");
+                        $("#icon").addClass("fa-check");
+                        $("#icon").removeClass("fa-times");
+                    }
+
+                    $("#answerStatus").html(data.players[player].answerStatus);
+                    $("#points").html("+" + data.players[player].points + " points");
+                    $("#rank").html("Your rank is " + data.players[player].rank);
+
+                    if(state==3){
+                        $("#back").click(function() {
+                           window.location.href='/';
+                        });
+                        $("#endgame").show();
+                    }
+                }
+            }
+            
+        });
+
+        // Running first mode
+        playerCheckIn();
+
+    </script>
+
+    </body>
+</html>

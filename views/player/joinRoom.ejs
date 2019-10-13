@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="vi">
+    <head>
+        <title></title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <link rel="stylesheet" type="text/css" href="/style/index.css">
+    </head>
+    <body>
+    
+    <div class="container-fluid">
+        <div class="center">
+            <h1 class="logo">Bamboo!</h1>
+            <div class="row">
+                <span class="centering"> Room ID : <%= roomID%></span>
+            </div>
+            <div class="enterInput">
+                <div class="row">
+                    <span class="centering" id="message" style="color:#ff0000;"><%=message%></span>
+                </div>
+                <br>
+                <div class="row">
+                    <input class="roomIDInput" type="text" name="roomID" value="" placeholder="Your Nickname" id="nickName">
+                </div>
+                
+                <div class="row">
+                    <button class="ButtonEnter" onclick="enterRoomAsTemporaryUser()">Enter</button>
+                </div>
+                <br />
+                <div id='userLoggedIn' style="display:None">
+                    <div class="row">
+                        <span class="centering">or</span>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <button class="ButtonEnter" id='userIdentity' onclick="enterRoomAsLoggedInUser()">Continue as </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <a href="#">Terms & Privacy</a>
+    </div>
+  
+    <!-- Firebase App (the core Firebase SDK) is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/5.9.4/firebase-app.js"></script>
+
+    <!-- Add Firebase products that you want to use -->
+    <script src="https://www.gstatic.com/firebasejs/5.9.4/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.9.4/firebase-database.js"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.js"></script>
+
+    <script src="/javascript/config.js"></script>
+    <script>
+
+        firebase.auth().onAuthStateChanged(function(user) {
+            if (user && !user.isAnonymous) {
+                // User is signed in.
+                var displayName = user.displayName;
+                var uid = user.uid;
+                document.getElementById('userIdentity').innerText = 'Continue as '+displayName;
+                document.getElementById('userLoggedIn').style.display='';
+            }
+        });
+
+        const roomID = '<%= roomID%>';
+        console.log('[DEBUG] room ID = '+ roomID);
+
+        var socket = io.connect();
+        function joinRoomSocket(info){
+            socket.emit('player',{
+                state:3,
+                roomID:info.roomID,
+                name:info.name
+            });
+        }
+
+        var $jq = jQuery.noConflict();
+        function enterRoomAsTemporaryUser(){    
+
+            // var roomID = document.getElementById('roomID').value;
+            var nickName = document.getElementById('nickName').value;
+            var theUrl = window.location.href+'authen/checkRoom';
+
+            console.log('[DEBUG] nickName = ' + nickName);
+            
+            $jq.ajax({
+                type: 'POST',
+                url: '/player/checkNickName',
+                dataType: 'json',
+                data: {roomID: roomID, nickName: nickName, uid: '', playerType:'0'},
+                success: function(data) {
+                    // var roomJSON = $jq.parseJSON(data);
+                    console.log('[DEBUG]');
+                    console.log(data.isValidNickName);
+                    if(data.isValidNickName){
+                        joinRoomSocket({name:nickName,roomID:roomID});
+                        window.location.href = '/player/gameView';
+                    }else{
+                        document.getElementById('message').innerHTML = 'Nick name existed !';
+                    }
+                },
+                error: function(xhr, ajaxOptions, thrownError) {
+                    // alert(xhr.status);
+                    // alert(thrownError);
+                }
+            });
+        }
+
+        function enterRoomAsLoggedInUser(){        
+            firebase.auth().onAuthStateChanged(function(user) {
+                if (user && !user.isAnonymous) {
+                    // User is signed in.
+                    var displayName = user.displayName;
+                    var uid = user.uid;
+                    $jq.ajax({
+                        type: 'POST',
+                        url: '/player/checkNickName',
+                        dataType: 'json',
+                        data: {roomID: roomID, nickName: displayName, uid: uid, playerType:'0'},
+                        success: function(data) {
+                            // var roomJSON = $jq.parseJSON(data);
+                            console.log('[DEBUG]');
+                            console.log(data.isValidNickName);
+                            if(data.isValidNickName){
+                                joinRoomSocket({name:nickName,roomID:roomID});
+                                window.location.href = '/player/gameView';
+                            }else{
+                                document.getElementById('message').innerHTML = 'Nick name existed !';
+                            }
+                        },
+                        error: function(xhr, ajaxOptions, thrownError) {
+                            // alert(xhr.status);
+                            // alert(thrownError);
+                        }
+                    });
+                }
+            });
+
+        }
+
+    </script>
+
+    <!-- Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    </body>
+</html>

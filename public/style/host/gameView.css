@@ -1,0 +1,142 @@
+body {
+    font-family: 'Montserrat', sans-serif;
+    -webkit-animation: bgcolor 20s infinite;
+    animation: bgcolor 10s infinite;
+    -webkit-animation-direction: alternate;
+    animation-direction: alternate;
+    font-size: 2em;
+}
+
+.waiting {
+    margin-top: 10rem;
+}
+
+.center{
+    text-align: center;
+}
+
+.qImage {
+    margin-top: 3rem;
+    text-align: center;
+}
+
+.questionImage {
+    margin-left: auto;
+    margin-right: auto;
+    max-height: 20rem;
+}
+
+.top-scoreboard {
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    width: 40%;
+}
+
+.nameTop {
+    text-align: left;
+}
+
+.scoreTop {
+    text-align: right !important;
+}
+
+.answers-result {
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: -20%;
+    margin-bottom: 20%;
+    width: 50%;
+    padding: 10px;
+    -webkit-transform: rotate(-90deg); /* Chrome, Safari, Opera */
+    transform: rotate(-90deg);
+}
+
+.count-text {
+    text-shadow:
+		-1px -1px 0 #000,
+		1px -1px 0 #000,
+		-1px 1px 0 #000,
+		1px 1px 0 #000;
+    text-align: center;
+    font-weight: bold;
+    color: white;
+    font-size: 28pt;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+}
+
+.answers-bar-bg {
+    height: 40px;
+    width: 200px;
+    background-color: rgba(255, 255, 255, 0);
+    margin-top: 25px;
+    margin-bottom: 25px;
+}
+
+.loader {
+    display: block;
+    height: 50%;
+    margin-left: auto;
+    margin-right: auto;
+    border: 8px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 8px solid #3A3B3A;
+    width: 40px;
+    height: 40px;
+    -webkit-animation: spin 1.5s linear infinite; /* Safari */
+    animation: spin 1.5s linear infinite;
+}
+
+.question {
+    margin-top: 2rem;
+}
+
+.question h1 {
+    max-width: 100rem;
+    margin: auto;
+}
+
+.answer {
+    width:100%;
+    height:100%;
+    background-color: white;
+    color: black;
+    font-size: 28pt;
+}
+
+#title1, #title2{
+    text-align: center;
+    color: black;
+    font-family: 'Raleway', sans-serif;
+}
+#title2{
+    font-size: 15px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes bgcolor {
+    0% {
+        background-color: #47d666
+    }
+
+    30% {
+        background-color: #6cd654
+    }
+
+    60% {
+        background-color: #9ad04c
+    }
+
+    90% {
+        background-color: #c1df51
+    }
+
+    100% {
+        background-color: #cbdd6e
+    }
+}

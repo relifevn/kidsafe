@@ -1,0 +1,79 @@
+<!-- Page Content -->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Dashboard</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.9.3/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.9.3/firebase.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.9.3/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.9.4/firebase-database.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">    
+    <link rel="stylesheet" type="text/css" href="/style/admin/dash.css">
+    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+
+    <!-- TAB -->
+    
+    <!--  -->
+</head>
+<body>
+<div class="container-fluid">
+    <nav class="menu">
+        <ul class="active">
+            <li class="current-item"> <a id="adminname"  href ="">Admin</a></li>
+          <li><a href="#" id="feedback">Feedback</a></li>
+          <li><a href="#" id="promotion">Promotion</a></li>
+          <li><a href="#" id="moreinfo">More</a></li>
+          <li><a href="#" id="logout">Logout</a></li>
+
+
+          <!-- <li><a href="#">Get in Touch</a></li>
+          <li><a href="#">Blog</a></li> -->
+        </ul>
+      
+        <a class="toggle-nav" href="#">&#9776;</a>
+      
+        
+    </nav>
+    <!-- <button type='submit' method='post', action='contact/send'>Send Notification</button> -->
+    <!-- Hello -->
+      <!-- Just Try -->
+    <div id="newfeed" >
+        <h2 class="alert alert-secondary" role="alert">
+            Customer's Feedback
+        </h2>
+        <div  role="alert" class="list-feed">
+            <ul id="feedbacklist">
+            </ul>
+        </div>
+    </div>
+    <div id="more" style="display:none">
+        <h3>Updating...</h3>
+    </div>
+<%- include ./email.ejs %>
+    
+
+    <!-- Page Heading -->
+    <!-- -->
+    <!--  -->
+  <!-- /.container -->
+  <!-- <script id="_waum19">var _wau = _wau || []; _wau.push(["dynamic", "xya36fc370", "m19", "c4302bffffff", "small"]);</script>
+  <script async src="//waust.at/d.js"></script> -->
+
+  <!-- <a href="#" title="web counter code"><img src="https://counter6.wheredoyoucomefrom.ovh/private/freecounterstat.php?c=sk99jbe18ygu8hft779mhxfkzpqll6s7" border="0" title="web counter code" alt="web counter code"></a> -->
+</body>
+<script src="/javascript/config.js"></script>
+<script src="/javascript/dashboard.js"></script>
+<script src="/javascript/promo.js"></script>
+
+<script src="https://smtpjs.com/v3/smtp.js">
+</script>
+</html>
+  

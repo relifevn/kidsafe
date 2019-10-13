@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <title><%= title%></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="/style/feedback.css">
+    <link rel="stylesheet" type="text/css" href="/style/index.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="center">
+            <h1 class="logo">KidSafe!</h1>
+
+            <div class="enterInput">
+                <div class="row">
+                    <span class="centering" style="color:#ff0000" id="message"><%=message%></span>
+                </div>
+                <div class="row">
+                    <input id="searchKey" class="input-group-text roomIDInput" type="text" name="search" value=""
+                        placeholder="Search">
+                </div>
+                <h1 id="school"></h1>
+                <h2 id="vehicle"></h2>
+                <br>
+                <div id="entity-list" class="row">
+                    <!--
+                        Template
+
+                        <div class="row">
+                            <button class="btn ButtonEnter" onclick="func()"></button>
+                        </div>
+                    -->
+                </div>
+                <!-- <br />
+                <div class="row">
+                    <span class="centering">or</span>
+                </div>
+                <br />
+                <div class="row">
+                    <button class="btn ButtonEnter" onclick="createLobby()">Create a lobby</button>
+                </div> -->
+            </div>
+
+        </div>
+    </div>
+
+    <body marginwidth="0" marginheight="0">
+        <img src="https://d6tizftlrpuof.cloudfront.net/themes/production/usabilla-button-35d1ced8945d3ee21c46cef387cc3615.png"
+            width="40" height="131" id="myBtn">
+
+    </body>
+    <%- include feedback.ejs %>
+
+
+    <div class="footer">
+        <a href="#">Terms & Privacy</a>
+    </div>
+
+</body>
+
+<!-- The core Firebase JS SDK is always required and must be listed first -->
+<script src="https://www.gstatic.com/firebasejs/7.2.0/firebase-app.js"></script>
+
+<!-- Add Firebase products that you want to use -->
+<!-- <script src="https://www.gstatic.com/firebasejs/5.9.4/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/5.9.4/firebase-database.js"></script> -->
+
+<!-- Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+    crossorigin="anonymous"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+    crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+    crossorigin="anonymous"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+    crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+    crossorigin="anonymous"></script>
+
+<script src="/javascript/config.js"></script>
+<script src="/javascript/feedback.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.js"></script>
+
+<script>
+    var $jq = jQuery.noConflict();
+    var socket = io.connect();
+    var school = {};
+    var vehicle = {};
+
+    /* SOCKET */
+    socket.on('schools-result', function (data) {
+        console.log('schools-result', data)
+        changeSchoolList(data);
+    });
+
+    socket.on('vehicles-result', function (data) {
+        console.log('school-result', data);
+        changeVehicleList(data.vehicles);
+    });
+
+    socket.on('vehicle-history', function (data) {
+        console.log('vehicle-history', data);
+    });
+
+    /* HELPER FUNCTIONS */
+    function changeSchoolList(data) {
+        const div = document.getElementById('entity-list');
+        div.innerHTML = Object.keys(data)
+            .map(key => `<button class="btn ButtonEnter" onclick="selectSchool('${key}', '${data[key].name}')">${data[key].name}</button>`)
+            .join('');
+    }
+
+    function changeVehicleList(data) {
+        const div = document.getElementById('entity-list');
+        div.innerHTML = Object.keys(data)
+            .map(key => `<button class="btn ButtonEnter" onclick="selectVehicle('${key}', '${data[key].vid}')">${data[key].vid}</button>`)
+            .join('');
+    }
+
+    function search() {
+        var searchKey = document.getElementById('searchKey').value;
+        socket.emit('search', {
+            searchKey: searchKey
+        });
+        console.log('[SENT]' + searchKey);
+    }
+    search();
+
+    function selectSchool(key, name) {
+        socket.emit('select-school', { key: key });
+        const div = document.getElementById('school');
+        div.innerText = name;
+        school = {
+            name: name,
+            key: key
+        }
+    }
+
+    function selectVehicle(key, name) {
+        socket.emit('select-vehicle', { schoolKey: school.key, vehicleKey: key });
+        const div = document.getElementById('vehicle');
+        div.innerText = name;
+        vehicle = {
+            name: name,
+            key: key
+        }
+    }
+
+</script>
+
+</html>
