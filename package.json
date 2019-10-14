@@ -1,10 +1,11 @@
 {
   "name": "kid-safe",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Project Kid Safe",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon bin/www"
+    "start": "nodemon bin/www",
+    "log": "heroku logs --app nhom-khkt-hiep-phuoc --tail"
   },
   "dependencies": {
     "body-parser": "^1.8.1",

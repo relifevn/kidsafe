@@ -8,12 +8,19 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="/style/feedback.css">
+    <!-- <link rel="stylesheet" type="text/css" href="/style/feedback.css"> -->
     <link rel="stylesheet" type="text/css" href="/style/index.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 
 <body>
+    <div class="alert-containers">
+        <div class="alert">
+            <span><strong>Danger!</strong> Indicates a dangerous or potentially negative action.</span>
+            <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+        </div>
+    </div>
+
     <div class="container-fluid">
         <div class="center">
             <h1 class="logo">KidSafe!</h1>
@@ -23,7 +30,7 @@
                     <span class="centering" style="color:#ff0000" id="message"></span>
                 </div>
                 <div class="row">
-                    <input id="searchKey" class="input-group-text roomIDInput" type="text" name="search" value=""
+                    <input id="searchKey" class="input-group-text search-input" type="text" name="search" value=""
                         placeholder="Search">
                 </div>
                 <h1 id="school"></h1>
@@ -41,7 +48,7 @@
     </div>
 
     <div class="footer">
-        <a href="#"><%= version%></a>
+        <%= version%>
     </div>
 
 </body>

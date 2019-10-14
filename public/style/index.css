@@ -20,7 +20,7 @@ body {
   width: 50%;
 }
 
-.roomIDInput {
+.search-input {
   text-align: center;
   margin: auto;
   width: 50%;
@@ -32,6 +32,47 @@ body {
   box-shadow: 0px 10px 16px 1px rgba(0, 0, 0, 0.65);
 
   margin-bottom: 1rem;
+}
+
+/* Alert */
+.alert {
+  padding: 20px;
+  background-color: #f44336;
+  color: white;
+  justify-content: space-between;
+  display: flex;
+  align-items: center;
+}
+
+.closebtn {
+  margin-left: 15px;
+  color: white;
+  font-weight: bold;
+  float: right;
+  font-size: 22px;
+  line-height: 20px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.closebtn:hover {
+  color: black;
+}
+
+.alert-containers {
+  position: fixed;
+  left: 0px;
+  top: 0px;
+  height: auto;
+  width: 100%;
+}
+
+.school {
+  font-family: inherit;
+}
+
+.vehicle {
+  font-family: inherit;
 }
 
 /* ------------- */
@@ -120,17 +161,19 @@ body {
     font-size: 5rem;
   }
 
-  .roomIDInput {
+  .search-input {
     font-size: 2rem;
   }
+  /*
 
-  .ButtonEnter {
+  .item {
     font-size: 2rem;
   }
+  
 
   .footer {
     font-size: 1.3rem;
-  }
+  } */
 }
 
 /* Large devices (desktops, 992px and up) */
@@ -139,18 +182,20 @@ body {
     font-size: 7rem;
   }
 
-  .roomIDInput {
+  .search-input {
     font-size: 5rem;
   }
+  /* 
 
-  .ButtonEnter {
+  .item {
     font-size: 5rem;
   }
+  
 
   .footer {
     bottom: 1.3rem;
     font-size: 2rem;
-  }
+  } */
 }
 
 /* Extra large devices (large desktops, 1200px and up) */
@@ -158,24 +203,27 @@ body {
   .center {
     margin-top: 10%;
   }
+
   .logo {
     font-size: 8rem;
   }
 
-  .roomIDInput {
+  .search-input {
     width: 40%;
     font-size: 2rem;
   }
+  /* 
+  
+    .item {
+      width: 40%;
+      font-size: 2rem;
+    }
 
-  .ButtonEnter {
-    width: 40%;
-    font-size: 2rem;
-  }
 
   .footer {
     bottom: 1.3rem;
     font-size: 2rem;
-  }
+  } */
 }
 #myBtn {
   display: block;

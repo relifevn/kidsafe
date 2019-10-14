@@ -4,7 +4,7 @@ var database = require('../routes/database');
 
 const API_KEY = 'F72FD054C190F505B93F09690BA99C5B';
 const TITLE = 'KIDSAFE';
-const VERSION = 'v0.0.1';
+const VERSION = 'v0.0.2';
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
