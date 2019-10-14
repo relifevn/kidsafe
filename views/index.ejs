@@ -51,22 +51,18 @@
         </div>
     </div>
 
-    <!-- <body marginwidth="0" marginheight="0">
-        <img src="https://d6tizftlrpuof.cloudfront.net/themes/production/usabilla-button-35d1ced8945d3ee21c46cef387cc3615.png"
-            width="40" height="131" id="myBtn">
-    </body> -->
-
     <div class="footer">
         <a href="#">Terms & Privacy</a>
     </div>
 
 </body>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
 
 <script>
     /* SETUP */
     var socket = io.connect(window.location.href);
+    console.log(window.location.href);
     var school = {};
     var vehicle = {};
 </script>
