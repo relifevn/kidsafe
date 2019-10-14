@@ -32,27 +32,16 @@
                 <div id="entity-list" class="row">
                     <!--
                         Template
-
-                        <div class="row">
-                            <button class="btn ButtonEnter" onclick="func()"></button>
-                        </div>
+                        <button class="item" onclick="func()"></button>
                     -->
                 </div>
-                <!-- <br />
-                <div class="row">
-                    <span class="centering">or</span>
-                </div>
-                <br />
-                <div class="row">
-                    <button class="btn ButtonEnter" onclick="createLobby()">Create a lobby</button>
-                </div> -->
             </div>
 
         </div>
     </div>
 
     <div class="footer">
-        <a href="#">Terms & Privacy</a>
+        <a href="#"><%= version%></a>
     </div>
 
 </body>
@@ -61,7 +50,7 @@
 
 <script>
     /* SETUP */
-    var socket = io.connect(window.location.href);
+    var socket = io.connect();
     console.log(window.location.href);
     var school = {};
     var vehicle = {};
@@ -87,14 +76,14 @@
     function changeSchoolList(data) {
         const div = document.getElementById('entity-list');
         div.innerHTML = Object.keys(data)
-            .map(key => `<button class="btn ButtonEnter" onclick="selectSchool('${key}', '${data[key].name}')">${data[key].name}</button>`)
+            .map(key => `<button class="item" onclick="selectSchool('${key}', '${data[key].name}')">${data[key].name}</button>`)
             .join('');
     }
 
     function changeVehicleList(data) {
         const div = document.getElementById('entity-list');
         div.innerHTML = Object.keys(data)
-            .map(key => `<button class="btn ButtonEnter" onclick="selectVehicle('${key}', '${data[key].vid}')">${data[key].vid}</button>`)
+            .map(key => `<button class="item" onclick="selectVehicle('${key}', '${data[key].vid}')">${data[key].vid}</button>`)
             .join('');
     }
 

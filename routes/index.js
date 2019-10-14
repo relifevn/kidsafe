@@ -4,10 +4,11 @@ var database = require('../routes/database');
 
 const API_KEY = 'F72FD054C190F505B93F09690BA99C5B';
 const TITLE = 'KIDSAFE';
+const VERSION = 'v0.0.1';
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
-	res.render('index', { title: TITLE }); // index.hbs file is rendered
+	res.render('index', { title: TITLE, version: VERSION }); // index.hbs file is rendered
 });
 
 router.get('/upload', function (req, res, next) {
