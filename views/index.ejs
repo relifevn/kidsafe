@@ -70,6 +70,7 @@
 
     socket.on('vehicle-history', function (data) {
         console.log('vehicle-history', data);
+        changeStatusList(data.statuses);
     });
 
     /* HELPER FUNCTIONS */
@@ -84,6 +85,13 @@
         const div = document.getElementById('entity-list');
         div.innerHTML = Object.keys(data)
             .map(key => `<button class="item" onclick="selectVehicle('${key}', '${data[key].vid}')">${data[key].vid}</button>`)
+            .join('');
+    }
+
+    function changeStatusList(data) {
+        const div = document.getElementById('entity-list');
+        div.innerHTML = Object.keys(data)
+            .map(key => `<button class="item ${data[key].isHasPerson == 'true' ? 'red' : ''}">${data[key].date}</button>`)
             .join('');
     }
 
