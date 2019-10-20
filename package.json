@@ -1,6 +1,6 @@
 {
   "name": "kid-safe",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "Project Kid Safe",
   "main": "index.js",
   "scripts": {
@@ -25,5 +25,5 @@
     "node",
     "express"
   ],
-  "author": "RelifeVN"
+  "author": "thinh-huynh"
 }
