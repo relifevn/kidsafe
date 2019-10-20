@@ -9,7 +9,7 @@ const TITLE = 'KIDSAFE';
 const VERSION = 'v0.0.2';
 const USER_GMAIL = 'helonesecure@gmail.com';
 const PASS_GMAIL = '50BD1167F23A9AD9673FD350B64B21BC';
-const SENT_TO_GMAIL = 'thinhhuynh3108@gmail.com';
+const SENT_TO_GMAIL = 'nhomkhkthiepphuoc123@gmail.com';
 
 const sendMail = (data) => {
   let transporter = nodeMailer.createTransport({
