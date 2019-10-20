@@ -1,17 +1,18 @@
-var express = require('express');
-var router = express.Router();
-var database = require('../routes/database');
+const express = require('express');
+const router = express.Router();
+const database = require('../routes/database');
+const emitSockets = require('../websocket/socket').emitSockets;
 
 const API_KEY = 'F72FD054C190F505B93F09690BA99C5B';
 const TITLE = 'KIDSAFE';
 const VERSION = 'v0.0.2';
 
 /* GET home page. */
-router.get('/', function (req, res, next) {
+router.get('/', (req, res, next) => {
 	res.render('index', { title: TITLE, version: VERSION }); // index.hbs file is rendered
 });
 
-router.get('/upload', function (req, res, next) {
+router.get('/upload', (req, res, next) => {
 	var vehicleId = req.query.vehicleId || '';
 	var schoolId = req.query.schoolId || '';
 	var apiKey = req.query.apiKey || '';
@@ -34,6 +35,7 @@ router.get('/upload', function (req, res, next) {
 					isHasPerson: isHasPerson
 				};
 				database.ref(`/${schoolId}/vehicles/${vehicleId}/statuses`).update(data);
+				emitSockets('alert', { vehicleId: vehicleId, schoolId: schoolId, isHasPerson: isHasPerson, data: data });
 				res.json({ status: 1, message: 'ok!' });
 			} else {
 				res.json({ status: 0, error: { message: 'vehicleId or schoolId is wrong!' } });

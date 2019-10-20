@@ -4,6 +4,7 @@
 <head>
     <title><%= title%></title>
     <meta charset="UTF-8">
+    <link rel="icon" href="images/icon.png" type="image/x-icon" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
@@ -14,11 +15,13 @@
 </head>
 
 <body>
-    <div class="alert-containers">
+    <div id="alerts" class="alert-containers">
+        <!--
         <div class="alert">
             <span><strong>Danger!</strong> Indicates a dangerous or potentially negative action.</span>
-            <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+            <span class="closebtn" onclick="delete_alert(this)">&times;</span>
         </div>
+        -->
     </div>
 
     <div class="container-fluid">
@@ -80,6 +83,11 @@
         changeStatusList(data.statuses);
     });
 
+    socket.on('alert', function (data) {
+        console.log('alert', data);
+        addAlert(data);
+    });
+
     /* HELPER FUNCTIONS */
     function changeSchoolList(data) {
         const div = document.getElementById('entity-list');
@@ -128,6 +136,22 @@
             name: name,
             key: key
         }
+    }
+
+    function deleteAlert(e) {
+        e.parentElement.remove();
+    }
+
+    function addAlert(data) {
+        if (!data.isHasPerson) return;
+        const div = document.getElementById('alerts');
+        div.innerHTML = div.innerHTML +
+            `
+            <div class="alert">
+                <span><strong>${'Danger'}</strong> Vehicle ${data.vehicleId} in ${data.schoolId} at ${new Date()}.</span>
+                <span class="closebtn" onclick="deleteAlert(this)">&times;</span>
+            </div>
+            `
     }
 
 </script>
