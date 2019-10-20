@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <title><%= title%></title>
+    <meta charset="UTF-8">
+    <link rel="icon" href="images/icon.png" type="image/x-icon" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="style/index.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+    <div id="alerts" class="alert-containers">
+        <!--
+            Template
+            <div class="alert">
+                <span><strong>Danger!</strong> Indicates a dangerous or potentially negative action.</span>
+                <span class="closebtn" onclick="delete_alert(this)">&times;</span>
+            </div>
+        -->
+    </div>
+
+    <div class="container-fluid">
+        <div class="center">
+            <h1 class="logo">KidSafe!</h1>
+
+            <div class="enterInput">
+                <div class="row">
+                    <span class="centering" style="color:#ff0000" id="message"></span>
+                </div>
+                <div class="row">
+                    <input id="searchKey" class="input-group-text search-input" type="text" name="search" value=""
+                        placeholder="Search">
+                </div>
+                <h1 id="school"></h1>
+                <h2 id="vehicle"></h2>
+                <br>
+                <div id="entity-list" class="row">
+                    <!--
+                        Template
+                        <button class="item" onclick="func()"></button>
+                    -->
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="footer">
+        <%= version%>
+    </div>
+
+</body>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
+
+<script>
+    /* SETUP */
+    var socket = io.connect();
+    console.log(window.location.href);
+    var school = {};
+    var vehicle = {};
+</script>
+
+<script>
+    /* SOCKET */
+    socket.on('schools-result', function (data) {
+        console.log('schools-result', data)
+        changeSchoolList(data);
+    });
+
+    socket.on('vehicles-result', function (data) {
+        console.log('school-result', data);
+        changeVehicleList(data.vehicles);
+    });
+
+    socket.on('vehicle-history', function (data) {
+        console.log('vehicle-history', data);
+        changeStatusList(data.statuses);
+    });
+
+    socket.on('alert', function (data) {
+        console.log('alert', data);
+        addAlert(data);
+    });
+
+    /* HELPER FUNCTIONS */
+    function changeSchoolList(data) {
+        const div = document.getElementById('entity-list');
+        div.innerHTML = Object.keys(data)
+            .map(key => `<button class="item" onclick="selectSchool('${key}', '${data[key].name}')">${data[key].name}</button>`)
+            .join('');
+    }
+
+    function changeVehicleList(data) {
+        const div = document.getElementById('entity-list');
+        div.innerHTML = Object.keys(data)
+            .map(key => `<button class="item" onclick="selectVehicle('${key}', '${data[key].vid}')">${data[key].vid}</button>`)
+            .join('');
+    }
+
+    function changeStatusList(data) {
+        const div = document.getElementById('entity-list');
+        div.innerHTML = Object.keys(data)
+            .map(key => `<button class="item ${data[key].isHasPerson == 'true' ? 'red' : ''}">${data[key].date}</button>`)
+            .join('');
+    }
+
+    function search() {
+        var searchKey = document.getElementById('searchKey').value;
+        socket.emit('search', {
+            searchKey: searchKey
+        });
+        console.log('[SENT]' + searchKey);
+    }
+
+    function selectSchool(key, name) {
+        socket.emit('select-school', { key: key });
+        const div = document.getElementById('school');
+        div.innerText = name;
+        school = {
+            name: name,
+            key: key
+        }
+    }
+
+    function selectVehicle(key, name) {
+        socket.emit('select-vehicle', { schoolKey: school.key, vehicleKey: key });
+        const div = document.getElementById('vehicle');
+        div.innerText = name;
+        vehicle = {
+            name: name,
+            key: key
+        }
+    }
+
+    function deleteAlert(e) {
+        e.parentElement.remove();
+    }
+
+    function addAlert(data) {
+        if (data.isHasPerson === 'false') return;
+        const div = document.getElementById('alerts');
+        div.innerHTML = div.innerHTML +
+            `
+            <div class="alert">
+                <span><strong>${'Danger'}</strong> Vehicle ${data.vehicleId} in ${data.schoolId} at ${new Date()}.</span>
+                <span class="closebtn" onclick="deleteAlert(this)">&times;</span>
+            </div>
+            `
+    }
+
+</script>
+
+<script>
+    window.addEventListener('DOMContentLoaded', (event) => {
+        search();
+    });
+</script>
+
+</html>

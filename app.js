@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 
 // set up our express application 
-app.use(express.static("public"));
+app.use(express.static("public/"));
 
 // set the view engine to ejs
 app.set('view engine', 'ejs');
