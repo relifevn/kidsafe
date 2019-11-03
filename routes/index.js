@@ -27,11 +27,12 @@ const sendMail = (data) => {
     subject: '[Cảnh báo] Phát hiện còn người trên xe khi xe đã đóng khóa cửa', // Subject line
     text: '', // plain text body
     html: `
-      <b>Phát hiện nguy hiểm trên xe có biển số ${data.vehicleId} tại trường ${data.schoolId} vào lúc ${new Date()} </b>
+      <b>Phát hiện nguy hiểm trên xe có biển số ${data.vid} tại trường ${data.schoolName} vào lúc ${new Date()} </b>
       <br> <p>Vui lòng báo với người có trách nhiệm quản lý gần đó để kiểm tra !</p> <br>
       <br> <br> <p> Vui lòng không phản hồi tin nhắn này vì đây là tin nhắn tự động từ hệ thống SafeKid </p> 
     ` // html body
   };
+  console.log('MAIL: ', data);
   transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
       return console.log(error);
@@ -201,6 +202,11 @@ router.get('/school', (req, res, next) => {
   res.render('school', {});
 });
 
+/*
+  TEST :
+  https://nhom-khkt-hiep-phuoc.herokuapp.com/upload?vehicleId=v1&schoolId=school_1&apiKey=F72FD054C190F505B93F09690BA99C5B&isHasPerson=false
+*/
+
 router.get('/upload', (req, res, next) => {
   var vehicleId = req.query.vehicleId || '';
   var schoolId = req.query.schoolId || '';
@@ -214,22 +220,38 @@ router.get('/upload', (req, res, next) => {
   } else if (apiKey !== API_KEY) {
     res.json({ status: 0, error: { message: 'apiKey is wrong!' } });
   } else {
-    database.ref(`/${schoolId}/vehicles/${vehicleId}/statuses`).once('value').then(function (snapshot) {
-      var result = snapshot.val();
-      if (result) {
-        const t = Object.keys(result).length;
-        const data = {};
-        data['s' + (t + 1)] = {
-          date: new Date(),
-          isHasPerson: isHasPerson
-        };
-        database.ref(`/${schoolId}/vehicles/${vehicleId}/statuses`).update(data);
-        const _data = { vehicleId: vehicleId, schoolId: schoolId, isHasPerson: isHasPerson, date: new Date() };
-        emitSockets('alert', { vehicleId: vehicleId, schoolId: schoolId, isHasPerson: isHasPerson, data: _data });
-        if (isHasPerson === 'true') {
-          sendMail(_data);
+    //vehicles/${vehicleId}/statuses
+    database.ref(`/${schoolId}`).once('value').then(function (snapshot) {
+      const schoolInfo = snapshot.val();
+      if (schoolInfo) {
+        try {
+          const statuses = schoolInfo.vehicles[vehicleId].statuses;
+          const vid = schoolInfo.vehicles[vehicleId].vid;
+          const schoolName = schoolInfo.name;
+          const t = Object.keys(statuses).length;
+          const data = {};
+          data['s' + (t + 1)] = {
+            date: new Date(),
+            isHasPerson: isHasPerson
+          };
+          database.ref(`/${schoolId}/vehicles/${vehicleId}/statuses`).update(data);
+          const _data = {
+            vehicleId: vehicleId,
+            schoolId: schoolId,
+            isHasPerson: isHasPerson,
+            vid: vid,
+            schoolName: schoolName,
+            date: new Date()
+          };
+          emitSockets('alert', { vehicleId: vehicleId, schoolId: schoolId, isHasPerson: isHasPerson, data: _data });
+          if (isHasPerson === 'true') {
+            sendMail(_data);
+          }
+          res.json({ status: 1, message: 'ok!' });
         }
-        res.json({ status: 1, message: 'ok!' });
+        catch {
+          res.json({ status: 0, error: { message: 'vehicleId or schoolId is wrong!' } });
+        }
       } else {
         res.json({ status: 0, error: { message: 'vehicleId or schoolId is wrong!' } });
       }
