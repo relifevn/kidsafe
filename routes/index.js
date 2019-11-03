@@ -24,11 +24,12 @@ const sendMail = (data) => {
   let mailOptions = {
     from: '"SafeKid system" <helonesecure@gmail.com>', // sender address
     to: SENT_TO_GMAIL, // list of receivers
-    subject: '[Alert] auto-alert from SafeKid system', // Subject line
+    subject: '[Cảnh báo] Phát hiện còn người trên xe khi xe đã đóng khóa cửa', // Subject line
     text: '', // plain text body
     html: `
-      <b>Detect danger in vehicle ${data.vehicleId} in school ${data.schoolId} at ${new Date()} </b>
-      <p>Please don't reply!</p>
+      <b>Phát hiện nguy hiểm trên xe có biển số ${data.vehicleId} tại trường ${data.schoolId} vào lúc ${new Date()} </b>
+      <br> <p>Vui lòng báo với người có trách nhiệm quản lý gần đó để kiểm tra !</p> <br>
+      <br> <br> <p> Vui lòng không phản hồi tin nhắn này vì đây là tin nhắn tự động từ hệ thống SafeKid </p> 
     ` // html body
   };
   transporter.sendMail(mailOptions, (error, info) => {
