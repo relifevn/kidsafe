@@ -243,7 +243,7 @@ router.get('/upload', (req, res, next) => {
             schoolName: schoolName,
             date: new Date()
           };
-          emitSockets('alert', { vehicleId: vehicleId, schoolId: schoolId, isHasPerson: isHasPerson, data: _data });
+          emitSockets('alert', { vehicleId: vid, schoolId: schoolName, isHasPerson: isHasPerson, data: _data });
           if (isHasPerson === 'true') {
             sendMail(_data);
           }
