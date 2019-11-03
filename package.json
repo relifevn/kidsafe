@@ -7,6 +7,9 @@
     "start": "nodemon bin/www",
     "log": "heroku logs --app nhom-khkt-hiep-phuoc --tail"
   },
+  "engines": {
+    "node": "10.17.0"
+  },
   "dependencies": {
     "body-parser": "^1.8.1",
     "cookie-parser": "^1.4.4",
