@@ -9,7 +9,61 @@ const TITLE = 'KIDSAFE';
 const VERSION = 'v0.0.2';
 const USER_GMAIL = 'helonesecure@gmail.com';
 const PASS_GMAIL = '50BD1167F23A9AD9673FD350B64B21BC';
-const SENT_TO_GMAIL = 'nhomkhkthiepphuoc123@gmail.com';
+const SENT_TO_GMAIL = 'thcshiepphuockhkt@gmail.com'; // 'nhomkhkthiepphuoc123@gmail.com';
+
+const Nexmo = require('nexmo');
+const nexmo = new Nexmo({
+  apiKey: '406a8033',
+  apiSecret: "Seh0iUJrSRE2S3LJ"
+});
+
+var TeleSignSDK = require('telesignsdk');
+
+const customerId = "408A9095-5B23-4F90-ADD6-75BD401482E7";
+const apiKey = "Lv2ufKh5Fd9NyW8wXn4LBvmukfSYUUmpKaAPXu9w1YcYpb7uYCE+ivcdFlGeZoUb34fS/msnOFxfsx0tphslNA==";
+const rest_endpoint = "https://rest-api.telesign.com";
+const timeout = 10 * 1000; // 10 secs
+
+const client = new TeleSignSDK(customerId,
+  apiKey,
+  rest_endpoint,
+  timeout // optional
+  // userAgent
+);
+
+const sendSMS = (data) => {
+  // nexmo.message.sendSms(
+  //   '84387358924', '84975212994',
+  //   `Phát hiện nguy hiểm trên xe có biển số ${data.vid} tại trường ${data.schoolName} vào lúc ${new Date()}
+  //   Vị trí : ${data.location}
+  //   Click vào link để xem cụ thể vị trí trên bản đồ : https://www.google.com/maps/search/?api=1&query=${data.location}
+  //   `,
+  //   (err, responseData) => {
+  //     if (err) {
+  //       console.log(err);
+  //     } else {
+  //       console.dir(responseData);
+  //     }
+  //   }
+  // );
+
+  const phoneNumber = "84387358924";
+  const message = "You're scheduled for a dentist appointment at 2:30PM.";
+  const messageType = "ARN";
+
+  console.log("## MessagingClient.message ##");
+
+  function messageCallback(error, responseBody) {
+    if (error === null) {
+      console.log(`Messaging response for messaging phone number: ${phoneNumber}` +
+        ` => code: ${responseBody['status']['code']}` +
+        `, description: ${responseBody['status']['description']}`);
+    } else {
+      console.error("Unable to send message. " + error);
+    }
+  }
+  client.sms.message(messageCallback, phoneNumber, message, messageType);
+}
 
 const sendMail = (data) => {
   let transporter = nodeMailer.createTransport({
@@ -30,6 +84,8 @@ const sendMail = (data) => {
       <b>Phát hiện nguy hiểm trên xe có biển số ${data.vid} tại trường ${data.schoolName} vào lúc ${new Date()} </b>
       <br> <p>Vui lòng báo với người có trách nhiệm quản lý gần đó để kiểm tra !</p> <br>
       <br> <br> <p> Vui lòng không phản hồi tin nhắn này vì đây là tin nhắn tự động từ hệ thống SafeKid </p> 
+      <br> <p>Vị trí : ${data.location} </p>
+      <br> <p>Click vào link để xem cụ thể vị trí trên bản đồ : https://www.google.com/maps/search/?api=1&query=${data.location} </p> 
     ` // html body
   };
   console.log('MAIL: ', data);
@@ -204,14 +260,15 @@ router.get('/school', (req, res, next) => {
 
 /*
   TEST :
+  http://localhost:7777/upload?vehicleId=v1&schoolId=school_1&apiKey=F72FD054C190F505B93F09690BA99C5B&isHasPerson=1&location=28.6139,77.2090
   https://nhom-khkt-hiep-phuoc.herokuapp.com/upload?vehicleId=v1&schoolId=school_1&apiKey=F72FD054C190F505B93F09690BA99C5B&isHasPerson=false
 */
-
 router.get('/upload', (req, res, next) => {
   var vehicleId = req.query.vehicleId || '';
   var schoolId = req.query.schoolId || '';
   var apiKey = req.query.apiKey || '';
-  var isHasPerson = req.query.isHasPerson || '';
+  var isHasPerson = (req.query.isHasPerson) ? 'true' : 'false' || '';
+  var location = req.query.location || '';
 
   console.log(req.query);
 
@@ -241,11 +298,13 @@ router.get('/upload', (req, res, next) => {
             isHasPerson: isHasPerson,
             vid: vid,
             schoolName: schoolName,
-            date: new Date()
+            date: new Date(),
+            location: location,
           };
           emitSockets('alert', { vehicleId: vid, schoolId: schoolName, isHasPerson: isHasPerson, data: _data });
           if (isHasPerson === 'true') {
             sendMail(_data);
+            sendSMS(_data);
           }
           res.json({ status: 1, message: 'ok!' });
         }
