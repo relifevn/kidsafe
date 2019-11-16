@@ -24,7 +24,8 @@
     "nodemon": "^1.18.11",
     "serve-favicon": "^2.5.0",
     "socket.io": "^2.2.0",
-    "telesignsdk": "^2.2.1"
+    "telesignsdk": "^2.2.1",
+    "twilio": "^3.37.1"
   },
   "keywords": [
     "node",
