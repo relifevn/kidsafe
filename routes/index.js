@@ -71,7 +71,7 @@ const sendSMS = (data) => {
   // client.sms.message(messageCallback, phoneNumber, message, messageType);
 
   client.messages.create({
-    body: 'Hello from Node',
+    body: `Cảnh báo còn người trên xe có biển số ${data.vid} tại trường ${data.schoolName} vào lúc ${new Date()}. Vị trí : ${data.location}. https://www.google.com/maps/search/?api=1&query=${data.location}`,
     to: '+84387358924',  // Text this number
     from: '+12562531421' // From a valid Twilio number
   })
