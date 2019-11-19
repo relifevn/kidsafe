@@ -70,12 +70,15 @@ const sendSMS = (data) => {
   // }
   // client.sms.message(messageCallback, phoneNumber, message, messageType);
 
-  client.messages.create({
-    body: `Cảnh báo còn người trên xe có biển số ${data.vid} tại trường ${data.schoolName} vào lúc ${new Date()}. Vị trí : ${data.location}. https://www.google.com/maps/search/?api=1&query=${data.location}`,
-    to: '+84387358924',  // Text this number
-    from: '+12562531421' // From a valid Twilio number
-  })
-    .then((message) => console.log(message.sid));
+  // client.messages.create({
+  //   body: `Cảnh báo còn người trên xe có biển số ${data.vid} tại trường ${data.schoolName} vào lúc ${new Date()}. Vị trí : ${data.location}. https://www.google.com/maps/search/?api=1&query=${data.location}`,
+  //   to: '+84387358924',  // Text this number
+  //   from: '+12562531421' // From a valid Twilio number
+  // })
+  //   .then((message) => console.log(message.sid));
+
+  emitSockets('call', { phoneNumber: '0387358924' });
+  emitSockets('sendSMS', { phoneNumber: '0387358924', message: 'Hi there! FKS' });
 }
 
 const sendMail = (data) => {
@@ -113,7 +116,7 @@ const sendMail = (data) => {
 /*
   TEST :
   http://localhost:7777/upload?vehicleId=v1&schoolId=school_1&apiKey=F72FD054C190F505B93F09690BA99C5B&isHasPerson=1&location=28.6139,77.2090
-  https://nhom-khkt-hiep-phuoc.herokuapp.com/upload?vehicleId=v1&schoolId=school_1&apiKey=F72FD054C190F505B93F09690BA99C5B&isHasPerson=false
+  https://nhom-khkt-hiep-phuoc.herokuapp.com/upload?vehicleId=v1&schoolId=school_1&apiKey=F72FD054C190F505B93F09690BA99C5B&isHasPerson=1
 */
 router.get('/upload', (req, res, next) => {
   var vehicleId = req.query.vehicleId || '';
