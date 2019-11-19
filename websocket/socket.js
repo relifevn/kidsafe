@@ -18,6 +18,7 @@ exports.setup = (server) => {
   io.on('connection', (socket) => {
 
     console.log('[INFO] Made socket connection', socket.id);
+    socket.emit("connection", { message: "Welcome" });
 
     socket.on('playerCheckIn', function (data) {
       // do something
