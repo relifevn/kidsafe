@@ -11,25 +11,31 @@ const USER_GMAIL = 'helonesecure@gmail.com';
 const PASS_GMAIL = '50BD1167F23A9AD9673FD350B64B21BC';
 const SENT_TO_GMAIL = 'thcshiepphuockhkt@gmail.com'; // 'nhomkhkthiepphuoc123@gmail.com';
 
+/* Nexmo */
 const Nexmo = require('nexmo');
 const nexmo = new Nexmo({
   apiKey: '406a8033',
   apiSecret: "Seh0iUJrSRE2S3LJ"
 });
 
+/* TeleSign */
 var TeleSignSDK = require('telesignsdk');
-
 const customerId = "408A9095-5B23-4F90-ADD6-75BD401482E7";
 const apiKey = "Lv2ufKh5Fd9NyW8wXn4LBvmukfSYUUmpKaAPXu9w1YcYpb7uYCE+ivcdFlGeZoUb34fS/msnOFxfsx0tphslNA==";
 const rest_endpoint = "https://rest-api.telesign.com";
 const timeout = 10 * 1000; // 10 secs
+// const client = new TeleSignSDK(customerId,
+//   apiKey,
+//   rest_endpoint,
+//   timeout // optional
+//   // userAgent
+// );
 
-const client = new TeleSignSDK(customerId,
-  apiKey,
-  rest_endpoint,
-  timeout // optional
-  // userAgent
-);
+/* twillio */
+var accountSid = 'AC82142df6870e236c8df9b47fb21ff3e5'; // Your Account SID from www.twilio.com/console
+var authToken = '36dfffb4ba20fcc550bf8f5cb00c1861';   // Your Auth Token from www.twilio.com/console
+var twilio = require('twilio');
+var client = new twilio(accountSid, authToken);
 
 const sendSMS = (data) => {
   // nexmo.message.sendSms(
@@ -47,22 +53,29 @@ const sendSMS = (data) => {
   //   }
   // );
 
-  const phoneNumber = "84387358924";
-  const message = "You're scheduled for a dentist appointment at 2:30PM.";
-  const messageType = "ARN";
+  // const phoneNumber = "84387358924";
+  // const message = "You're scheduled for a dentist appointment at 2:30PM.";
+  // const messageType = "ARN";
 
-  console.log("## MessagingClient.message ##");
+  // console.log("## MessagingClient.message ##");
 
-  function messageCallback(error, responseBody) {
-    if (error === null) {
-      console.log(`Messaging response for messaging phone number: ${phoneNumber}` +
-        ` => code: ${responseBody['status']['code']}` +
-        `, description: ${responseBody['status']['description']}`);
-    } else {
-      console.error("Unable to send message. " + error);
-    }
-  }
-  client.sms.message(messageCallback, phoneNumber, message, messageType);
+  // function messageCallback(error, responseBody) {
+  //   if (error === null) {
+  //     console.log(`Messaging response for messaging phone number: ${phoneNumber}` +
+  //       ` => code: ${responseBody['status']['code']}` +
+  //       `, description: ${responseBody['status']['description']}`);
+  //   } else {
+  //     console.error("Unable to send message. " + error);
+  //   }
+  // }
+  // client.sms.message(messageCallback, phoneNumber, message, messageType);
+
+  client.messages.create({
+    body: `Cảnh báo còn người trên xe có biển số ${data.vid} tại trường ${data.schoolName} vào lúc ${new Date()}. Vị trí : ${data.location}. https://www.google.com/maps/search/?api=1&query=${data.location}`,
+    to: '+84387358924',  // Text this number
+    from: '+12562531421' // From a valid Twilio number
+  })
+    .then((message) => console.log(message.sid));
 }
 
 const sendMail = (data) => {
@@ -96,6 +109,69 @@ const sendMail = (data) => {
     console.log('Message %s sent: %s', info.messageId, info.response);
   });
 }
+
+/*
+  TEST :
+  http://localhost:7777/upload?vehicleId=v1&schoolId=school_1&apiKey=F72FD054C190F505B93F09690BA99C5B&isHasPerson=1&location=28.6139,77.2090
+  https://nhom-khkt-hiep-phuoc.herokuapp.com/upload?vehicleId=v1&schoolId=school_1&apiKey=F72FD054C190F505B93F09690BA99C5B&isHasPerson=false
+*/
+router.get('/upload', (req, res, next) => {
+  var vehicleId = req.query.vehicleId || '';
+  var schoolId = req.query.schoolId || '';
+  var apiKey = req.query.apiKey || '';
+  var isHasPerson = (req.query.isHasPerson) ? 'true' : 'false' || '';
+  var location = req.query.location || '';
+
+  console.log(req.query);
+
+  if (!(apiKey && vehicleId && schoolId)) {
+    res.json({ status: 0, error: { message: 'apiKey or vehicleId or schoolId is missing!' } });
+  } else if (apiKey !== API_KEY) {
+    res.json({ status: 0, error: { message: 'apiKey is wrong!' } });
+  } else {
+    //vehicles/${vehicleId}/statuses
+    database.ref(`/${schoolId}`).once('value').then(function (snapshot) {
+      const schoolInfo = snapshot.val();
+      if (schoolInfo) {
+        try {
+          const statuses = schoolInfo.vehicles[vehicleId].statuses;
+          const vid = schoolInfo.vehicles[vehicleId].vid;
+          const schoolName = schoolInfo.name;
+          const t = Object.keys(statuses).length;
+          const data = {};
+          data['s' + (t + 1)] = {
+            date: new Date(),
+            isHasPerson: isHasPerson
+          };
+          database.ref(`/${schoolId}/vehicles/${vehicleId}/statuses`).update(data);
+          const _data = {
+            vehicleId: vehicleId,
+            schoolId: schoolId,
+            isHasPerson: isHasPerson,
+            vid: vid,
+            schoolName: schoolName,
+            date: new Date(),
+            location: location,
+          };
+          emitSockets('alert', { vehicleId: vid, schoolId: schoolName, isHasPerson: isHasPerson, data: _data });
+          if (isHasPerson === 'true') {
+            sendMail(_data);
+            sendSMS(_data);
+          }
+          res.json({ status: 1, message: 'ok!' });
+        }
+        catch {
+          res.json({ status: 0, error: { message: 'vehicleId or schoolId is wrong!' } });
+        }
+      } else {
+        res.json({ status: 0, error: { message: 'vehicleId or schoolId is wrong!' } });
+      }
+    });
+
+  }
+
+});
+
 
 router.get('/', (req, res, next) => {
   database.ref('/').once('value').then(function (snapshot) {
@@ -256,68 +332,6 @@ router.get('/widgets', (req, res, next) => {
 
 router.get('/school', (req, res, next) => {
   res.render('school', {});
-});
-
-/*
-  TEST :
-  http://localhost:7777/upload?vehicleId=v1&schoolId=school_1&apiKey=F72FD054C190F505B93F09690BA99C5B&isHasPerson=1&location=28.6139,77.2090
-  https://nhom-khkt-hiep-phuoc.herokuapp.com/upload?vehicleId=v1&schoolId=school_1&apiKey=F72FD054C190F505B93F09690BA99C5B&isHasPerson=false
-*/
-router.get('/upload', (req, res, next) => {
-  var vehicleId = req.query.vehicleId || '';
-  var schoolId = req.query.schoolId || '';
-  var apiKey = req.query.apiKey || '';
-  var isHasPerson = (req.query.isHasPerson) ? 'true' : 'false' || '';
-  var location = req.query.location || '';
-
-  console.log(req.query);
-
-  if (!(apiKey && vehicleId && schoolId)) {
-    res.json({ status: 0, error: { message: 'apiKey or vehicleId or schoolId is missing!' } });
-  } else if (apiKey !== API_KEY) {
-    res.json({ status: 0, error: { message: 'apiKey is wrong!' } });
-  } else {
-    //vehicles/${vehicleId}/statuses
-    database.ref(`/${schoolId}`).once('value').then(function (snapshot) {
-      const schoolInfo = snapshot.val();
-      if (schoolInfo) {
-        try {
-          const statuses = schoolInfo.vehicles[vehicleId].statuses;
-          const vid = schoolInfo.vehicles[vehicleId].vid;
-          const schoolName = schoolInfo.name;
-          const t = Object.keys(statuses).length;
-          const data = {};
-          data['s' + (t + 1)] = {
-            date: new Date(),
-            isHasPerson: isHasPerson
-          };
-          database.ref(`/${schoolId}/vehicles/${vehicleId}/statuses`).update(data);
-          const _data = {
-            vehicleId: vehicleId,
-            schoolId: schoolId,
-            isHasPerson: isHasPerson,
-            vid: vid,
-            schoolName: schoolName,
-            date: new Date(),
-            location: location,
-          };
-          emitSockets('alert', { vehicleId: vid, schoolId: schoolName, isHasPerson: isHasPerson, data: _data });
-          if (isHasPerson === 'true') {
-            sendMail(_data);
-            sendSMS(_data);
-          }
-          res.json({ status: 1, message: 'ok!' });
-        }
-        catch {
-          res.json({ status: 0, error: { message: 'vehicleId or schoolId is wrong!' } });
-        }
-      } else {
-        res.json({ status: 0, error: { message: 'vehicleId or schoolId is wrong!' } });
-      }
-    });
-
-  }
-
 });
 
 module.exports = router;
