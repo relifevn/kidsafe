@@ -6,6 +6,7 @@ const nodeMailer = require('nodemailer');
 const phoneNumber = '0979535659';
 
 const sendSMS = (data) => {
+  console.log(data);
   emitSockets('call', { phoneNumber: phoneNumber });
   emitSockets('sendSMS', {
     phoneNumber: phoneNumber,
