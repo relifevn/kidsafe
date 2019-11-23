@@ -120,11 +120,10 @@ router.get('/upload', (req, res, next) => {
           };
           emitSockets('alert', { vehicleId: vid, schoolId: schoolName, isHasPerson: isHasPerson, data: _data });
           if (isHasPerson === 'true') {
-            sendMail(_data);
-            isOkToSendSMS();
-            // if (isOkToSendSMS()) {
-            //   sendSMS(_data);
-            // }
+            if (isOkToSendSMS()) {
+              sendMail(_data);
+              sendSMS(_data);
+            }
           }
           res.json({ status: 1, message: 'ok!' });
         }
