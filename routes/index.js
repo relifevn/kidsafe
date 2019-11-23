@@ -13,8 +13,7 @@ const PASS_GMAIL = '50BD1167F23A9AD9673FD350B64B21BC';
 const SENT_TO_GMAIL = 'thcshiepphuockhkt@gmail.com'; // 'nhomkhkthiepphuoc123@gmail.com';
 
 const sendSMS = (data) => {
-  console.log(data);
-  const currentDate = new Date(Date.UTC(0, 0, 0, 7, 0, 0));
+  const currentDate = (new Date()) + 7*60*60*1000;
   const date = currentDate.getFullYear() + "-" + (currentDate.getMonth() + 1) + "-" + currentDate.getDate() + " " + currentDate.getHours() + ":" + currentDate.getMinutes() + ":" + currentDate.getSeconds();
   emitSockets('sendSMS', {
     phoneNumber: phoneNumber,
