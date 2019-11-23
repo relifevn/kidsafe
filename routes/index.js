@@ -4,6 +4,7 @@ const database = require('../routes/database');
 const emitSockets = require('../websocket/socket').emitSockets;
 const nodeMailer = require('nodemailer');
 const phoneNumber = '0979535659';
+const API_KEY = 'F72FD054C190F505B93F09690BA99C5B';
 
 const sendSMS = (data) => {
   console.log(data);
