@@ -18,10 +18,9 @@ Date.prototype.addHours = function (h) {
   return this;
 }
 
-var time = Date();
+var time = new Date();
 const isOkToSendSMS = () => {
   const currentDate = new Date();
-  console.log(currentDate.getTime() - time.getTime(), currentDate.getTime(), time.getTime())
   if (currentDate.getTime() - time.getTime() > 60 * 1000 * MINUTE_LIMIT) {
     time = new Date();
     return true;
@@ -122,9 +121,10 @@ router.get('/upload', (req, res, next) => {
           emitSockets('alert', { vehicleId: vid, schoolId: schoolName, isHasPerson: isHasPerson, data: _data });
           if (isHasPerson === 'true') {
             sendMail(_data);
-            if (isOkToSendSMS()) {
-              sendSMS(_data);
-            }
+            isOkToSendSMS();
+            // if (isOkToSendSMS()) {
+            //   sendSMS(_data);
+            // }
           }
           res.json({ status: 1, message: 'ok!' });
         }
