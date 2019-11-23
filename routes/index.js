@@ -29,13 +29,24 @@ const isOkToSendSMS = () => {
   }
 }
 
+const extractLocation = (location) => {
+  if (location) {
+    const t = location.split(',');
+    if (t && t.length >= 3) {
+      return `${t[1]},${t[2]}`;
+    }
+  } else {
+    return '';
+  }
+}
+
 const sendSMS = (data) => {
   console.log('SMS_CALL');
   const currentDate = new Date().addHours(7);
   const date = currentDate.getFullYear() + "-" + (currentDate.getMonth() + 1) + "-" + currentDate.getDate() + " " + currentDate.getHours() + ":" + currentDate.getMinutes() + ":" + currentDate.getSeconds();
   emitSockets('sendSMS', {
     phoneNumber: phoneNumber,
-    message: `Xe ${data.vid}. Trường ${data.schoolName}. ${date}. Vị trí : ${data.location} - https://www.google.com/maps/search/?api=1&query=${data.location}`
+    message: `Xe ${data.vid}. Trường ${data.schoolName}. ${date}. Vị trí : ${extractLocation(data.location)} - https://www.google.com/maps/search/?api=1&query=${extractLocation(data.location)}`
   });
   setTimeout(() => {
     emitSockets('call', { phoneNumber: phoneNumber });
@@ -61,8 +72,8 @@ const sendMail = (data) => {
       <b>Phát hiện nguy hiểm trên xe có biển số ${data.vid} tại trường ${data.schoolName} vào lúc ${new Date()} </b>
       <br> <p>Vui lòng báo với người có trách nhiệm quản lý gần đó để kiểm tra !</p> <br>
       <br> <br> <p> Vui lòng không phản hồi tin nhắn này vì đây là tin nhắn tự động từ hệ thống SafeKid </p> 
-      <br> <p>Vị trí : ${data.location} </p>
-      <br> <p>Click vào link để xem cụ thể vị trí trên bản đồ : https://www.google.com/maps/search/?api=1&query=${data.location} </p> 
+      <br> <p>Vị trí : ${extractLocation(data.location)} </p>
+      <br> <p>Click vào link để xem cụ thể vị trí trên bản đồ : https://www.google.com/maps/search/?api=1&query=${extractLocation(data.location)} </p> 
     ` // html body
   };
   // console.log('MAIL: ', data);
@@ -120,7 +131,7 @@ router.get('/upload', (req, res, next) => {
           };
           emitSockets('alert', { vehicleId: vid, schoolId: schoolName, isHasPerson: isHasPerson, data: _data });
           if (isHasPerson === 'true') {
-            console.log(new Date());
+            console.log(new Date(),  extractLocation(_data.location));
             if (isOkToSendSMS()) {
               sendMail(_data);
               sendSMS(_data);
