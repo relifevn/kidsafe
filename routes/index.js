@@ -14,11 +14,12 @@ const SENT_TO_GMAIL = 'thcshiepphuockhkt@gmail.com'; // 'nhomkhkthiepphuoc123@gm
 
 const sendSMS = (data) => {
   console.log(data);
+  const currentDate = new Date(Date.UTC(0, 0, 0, 7, 0, 0));
+  const date = currentDate.getFullYear() + "-" + (currentDate.getMonth() + 1) + "-" + currentDate.getDate() + " " + currentDate.getHours() + ":" + currentDate.getMinutes() + ":" + currentDate.getSeconds();
   emitSockets('sendSMS', {
     phoneNumber: phoneNumber,
-    message: `Phát hiện nguy hiểm trên xe có biển số ${data.vid} tại trường ${data.schoolName} vào lúc ${new Date()}. Vị trí : ${data.location} - https://www.google.com/maps/search/?api=1&query=${data.location}`
-  }
-  );
+    message: `Xe ${data.vid}. Trường ${data.schoolName}. ${date}. Vị trí : ${data.location} - https://www.google.com/maps/search/?api=1&query=${data.location}`
+  });
   setTimeout(() => {
     emitSockets('call', { phoneNumber: phoneNumber });
   }, 2000);
