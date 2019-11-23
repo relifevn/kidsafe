@@ -11,13 +11,26 @@ const VERSION = 'v0.0.2';
 const USER_GMAIL = 'helonesecure@gmail.com';
 const PASS_GMAIL = '50BD1167F23A9AD9673FD350B64B21BC';
 const SENT_TO_GMAIL = 'thcshiepphuockhkt@gmail.com'; // 'nhomkhkthiepphuoc123@gmail.com';
+const MINUTE_LIMIT = 2;
 
-Date.prototype.addHours = function(h) {
-  this.setTime(this.getTime() + (h*60*60*1000));
+Date.prototype.addHours = function (h) {
+  this.setTime(this.getTime() + (h * 60 * 60 * 1000));
   return this;
 }
 
+var time = Date();
+const isOkToSendSMS = () => {
+  const currentDate = new Date();
+  if (time.getTime() - currentDate.getTime() > 60 * 1000 * MINUTE_LIMIT) {
+    time = new Date();
+    return true;
+  } else {
+    return false;
+  }
+}
+
 const sendSMS = (data) => {
+  console.log('SMS_CALL');
   const currentDate = new Date().addHours(7);
   const date = currentDate.getFullYear() + "-" + (currentDate.getMonth() + 1) + "-" + currentDate.getDate() + " " + currentDate.getHours() + ":" + currentDate.getMinutes() + ":" + currentDate.getSeconds();
   emitSockets('sendSMS', {
@@ -108,9 +121,9 @@ router.get('/upload', (req, res, next) => {
           emitSockets('alert', { vehicleId: vid, schoolId: schoolName, isHasPerson: isHasPerson, data: _data });
           if (isHasPerson === 'true') {
             sendMail(_data);
-            console.log('SEND MAIL !!');
-            sendSMS(_data);
-            console.log('SEND SMS !!');
+            if (isOkToSendSMS()) {
+              sendSMS(_data);
+            }
           }
           res.json({ status: 1, message: 'ok!' });
         }
