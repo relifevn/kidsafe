@@ -21,7 +21,7 @@ Date.prototype.addHours = function (h) {
 var time = Date();
 const isOkToSendSMS = () => {
   const currentDate = new Date();
-  if (time.getTime() - currentDate.getTime() > 60 * 1000 * MINUTE_LIMIT) {
+  if (currentDate.getTime() - time.getTime() > 60 * 1000 * MINUTE_LIMIT) {
     time = new Date();
     return true;
   } else {
