@@ -14,15 +14,14 @@ const SENT_TO_GMAIL = 'thcshiepphuockhkt@gmail.com'; // 'nhomkhkthiepphuoc123@gm
 
 const sendSMS = (data) => {
   console.log(data);
-  emitSockets('call', { phoneNumber: phoneNumber });
   emitSockets('sendSMS', {
     phoneNumber: phoneNumber,
-    message:
-      `Phát hiện nguy hiểm trên xe có biển số ${data.vid} tại trường ${data.schoolName} vào lúc ${new Date()}
-      Vị trí : ${data.location}
-      Click vào link để xem cụ thể vị trí trên bản đồ : https://www.google.com/maps/search/?api=1&query=${data.location}
-      `}
+    message: `Phát hiện nguy hiểm trên xe có biển số ${data.vid} tại trường ${data.schoolName} vào lúc ${new Date()}. Vị trí : ${data.location} - https://www.google.com/maps/search/?api=1&query=${data.location}`
+  }
   );
+  setTimeout(() => {
+    emitSockets('call', { phoneNumber: phoneNumber });
+  }, 2000);
 }
 
 const sendMail = (data) => {
