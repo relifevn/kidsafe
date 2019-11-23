@@ -47,7 +47,7 @@ const sendMail = (data) => {
       <br> <p>Click vào link để xem cụ thể vị trí trên bản đồ : https://www.google.com/maps/search/?api=1&query=${data.location} </p> 
     ` // html body
   };
-  console.log('MAIL: ', data);
+  // console.log('MAIL: ', data);
   transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
       return console.log(error);
@@ -60,6 +60,7 @@ const sendMail = (data) => {
   TEST :
   http://localhost:7777/upload?vehicleId=v1&schoolId=school_1&apiKey=F72FD054C190F505B93F09690BA99C5B&isHasPerson=1&location=28.6139,77.2090
   https://nhom-khkt-hiep-phuoc.herokuapp.com/upload?vehicleId=v1&schoolId=school_1&apiKey=F72FD054C190F505B93F09690BA99C5B&isHasPerson=1
+  https://nhom-khkt-hiep-phuoc.herokuapp.com/upload?apiKey=F72FD054C190F505B93F09690BA99C5B&vehicleId=v1&schoolId=school_1&isHasPerson=1&location=1,10.755894,106.941180
 */
 router.get('/upload', (req, res, next) => {
   var vehicleId = req.query.vehicleId || '';
@@ -102,7 +103,9 @@ router.get('/upload', (req, res, next) => {
           emitSockets('alert', { vehicleId: vid, schoolId: schoolName, isHasPerson: isHasPerson, data: _data });
           if (isHasPerson === 'true') {
             sendMail(_data);
+            console.log('SEND MAIL !!');
             sendSMS(_data);
+            console.log('SEND SMS !!');
           }
           res.json({ status: 1, message: 'ok!' });
         }
