@@ -3,82 +3,18 @@ const router = express.Router();
 const database = require('../routes/database');
 const emitSockets = require('../websocket/socket').emitSockets;
 const nodeMailer = require('nodemailer');
-
-const API_KEY = 'F72FD054C190F505B93F09690BA99C5B';
-const TITLE = 'KIDSAFE';
-const VERSION = 'v0.0.2';
-const USER_GMAIL = 'helonesecure@gmail.com';
-const PASS_GMAIL = '50BD1167F23A9AD9673FD350B64B21BC';
-const SENT_TO_GMAIL = 'thcshiepphuockhkt@gmail.com'; // 'nhomkhkthiepphuoc123@gmail.com';
-
-/* Nexmo */
-const Nexmo = require('nexmo');
-const nexmo = new Nexmo({
-  apiKey: '406a8033',
-  apiSecret: "Seh0iUJrSRE2S3LJ"
-});
-
-/* TeleSign */
-var TeleSignSDK = require('telesignsdk');
-const customerId = "408A9095-5B23-4F90-ADD6-75BD401482E7";
-const apiKey = "Lv2ufKh5Fd9NyW8wXn4LBvmukfSYUUmpKaAPXu9w1YcYpb7uYCE+ivcdFlGeZoUb34fS/msnOFxfsx0tphslNA==";
-const rest_endpoint = "https://rest-api.telesign.com";
-const timeout = 10 * 1000; // 10 secs
-// const client = new TeleSignSDK(customerId,
-//   apiKey,
-//   rest_endpoint,
-//   timeout // optional
-//   // userAgent
-// );
-
-/* twillio */
-var accountSid = 'AC82142df6870e236c8df9b47fb21ff3e5'; // Your Account SID from www.twilio.com/console
-var authToken = '36dfffb4ba20fcc550bf8f5cb00c1861';   // Your Auth Token from www.twilio.com/console
-var twilio = require('twilio');
-var client = new twilio(accountSid, authToken);
+const phoneNumber = '0979535659';
 
 const sendSMS = (data) => {
-  // nexmo.message.sendSms(
-  //   '84387358924', '84975212994',
-  //   `Phát hiện nguy hiểm trên xe có biển số ${data.vid} tại trường ${data.schoolName} vào lúc ${new Date()}
-  //   Vị trí : ${data.location}
-  //   Click vào link để xem cụ thể vị trí trên bản đồ : https://www.google.com/maps/search/?api=1&query=${data.location}
-  //   `,
-  //   (err, responseData) => {
-  //     if (err) {
-  //       console.log(err);
-  //     } else {
-  //       console.dir(responseData);
-  //     }
-  //   }
-  // );
-
-  // const phoneNumber = "84387358924";
-  // const message = "You're scheduled for a dentist appointment at 2:30PM.";
-  // const messageType = "ARN";
-
-  // console.log("## MessagingClient.message ##");
-
-  // function messageCallback(error, responseBody) {
-  //   if (error === null) {
-  //     console.log(`Messaging response for messaging phone number: ${phoneNumber}` +
-  //       ` => code: ${responseBody['status']['code']}` +
-  //       `, description: ${responseBody['status']['description']}`);
-  //   } else {
-  //     console.error("Unable to send message. " + error);
-  //   }
-  // }
-  // client.sms.message(messageCallback, phoneNumber, message, messageType);
-
-  // client.messages.create({
-  //   body: `Cảnh báo còn người trên xe có biển số ${data.vid} tại trường ${data.schoolName} vào lúc ${new Date()}. Vị trí : ${data.location}. https://www.google.com/maps/search/?api=1&query=${data.location}`,
-  //   to: '+84387358924',  // Text this number
-  //   from: '+12562531421' // From a valid Twilio number
-  // })
-  //   .then((message) => console.log(message.sid));
-
-  emitSockets('call', { phoneNumber: '0387358924' });
-  emitSockets('sendSMS', { phoneNumber: '0387358924', message: 'Hi there! FKS' });
+  emitSockets('call', { phoneNumber: phoneNumber });
+  emitSockets('sendSMS', {
+    phoneNumber: phoneNumber,
+    message:
+      `Phát hiện nguy hiểm trên xe có biển số ${data.vid} tại trường ${data.schoolName} vào lúc ${new Date()}
+      Vị trí : ${data.location}
+      Click vào link để xem cụ thể vị trí trên bản đồ : https://www.google.com/maps/search/?api=1&query=${data.location}
+      `}
+  );
 }
 
 const sendMail = (data) => {
