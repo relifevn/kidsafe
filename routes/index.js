@@ -12,8 +12,13 @@ const USER_GMAIL = 'helonesecure@gmail.com';
 const PASS_GMAIL = '50BD1167F23A9AD9673FD350B64B21BC';
 const SENT_TO_GMAIL = 'thcshiepphuockhkt@gmail.com'; // 'nhomkhkthiepphuoc123@gmail.com';
 
+Date.prototype.addHours = function(h) {
+  this.setTime(this.getTime() + (h*60*60*1000));
+  return this;
+}
+
 const sendSMS = (data) => {
-  const currentDate = (new Date()) + 7*60*60*1000;
+  const currentDate = new Date().addHours(7);
   const date = currentDate.getFullYear() + "-" + (currentDate.getMonth() + 1) + "-" + currentDate.getDate() + " " + currentDate.getHours() + ":" + currentDate.getMinutes() + ":" + currentDate.getSeconds();
   emitSockets('sendSMS', {
     phoneNumber: phoneNumber,
