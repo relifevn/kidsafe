@@ -4,7 +4,7 @@ const database = require('../routes/database');
 const emitSockets = require('../websocket/socket').emitSockets;
 const nodeMailer = require('nodemailer');
 
-const phoneNumber = '0387358924' ;// '0979535659';
+const phoneNumber = '0979535659';
 const API_KEY = 'F72FD054C190F505B93F09690BA99C5B';
 const TITLE = 'KIDSAFE';
 const VERSION = 'v0.0.2';
@@ -131,7 +131,7 @@ router.get('/upload', (req, res, next) => {
           };
           emitSockets('alert', { vehicleId: vid, schoolId: schoolName, isHasPerson: isHasPerson, data: _data });
           if (isHasPerson === 'true') {
-            console.log(new Date(),  extractLocation(_data.location));
+            console.log(new Date(), extractLocation(_data.location));
             if (isOkToSendSMS()) {
               sendMail(_data);
               sendSMS(_data);
