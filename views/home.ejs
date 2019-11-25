@@ -431,7 +431,8 @@
         `
         <div class="sufee-alert alert with-close alert-danger alert-dismissible fade show">
           <span class="badge badge-pill badge-danger">${'Danger'}</span>
-          Vehicle ${data.vehicleId} in ${data.schoolId} at ${new Date()}.
+          Xe ${data.vid} của trường ${data.schoolName} vào lúc ${data.currentTime.time} ngày ${data.currentTime.date} tại vị trí ${data.location}. 
+          <a href="https://www.google.com/maps/search/?api=1&query=${data.location}"> Click vào đây để xem vị trí trên Google Maps </a>
           <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>

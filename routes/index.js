@@ -40,13 +40,29 @@ const extractLocation = (location) => {
   }
 }
 
+const appendLeadingZeroes = (n) => {
+  if (n <= 9) {
+    return '0' + n;
+  }
+  return n
+}
+
+const getCurrentTime = () => {
+  const currentDate = new Date().addHours(7);
+  const date = currentDate.getDate() + '-' + (currentDate.getMonth() + 1) + '-' + currentDate.getFullYear();
+  const time = appendLeadingZeroes(currentDate.getHours()) + ':' +
+    appendLeadingZeroes(currentDate.getMinutes()) + ':' +
+    appendLeadingZeroes(currentDate.getSeconds());
+  return { date, time };
+}
+
 const sendSMS = (data) => {
   console.log('SMS_CALL');
-  const currentDate = new Date().addHours(7);
-  const date = currentDate.getFullYear() + "-" + (currentDate.getMonth() + 1) + "-" + currentDate.getDate() + " " + currentDate.getHours() + ":" + currentDate.getMinutes() + ":" + currentDate.getSeconds();
+  const currentTime = getCurrentTime();
+  const location = extractLocation(data.location);
   emitSockets('sendSMS', {
     phoneNumber: phoneNumber,
-    message: `Xe ${data.vid}. Trường ${data.schoolName}. ${date}. Vị trí : ${extractLocation(data.location)} - https://www.google.com/maps/search/?api=1&query=${extractLocation(data.location)}`
+    message: `Xe ${data.vid}. Trường ${data.schoolName}.${currentTime.time}  ${currentTime.date}. Vị trí : ${location} - https://www.google.com/maps/search/?api=1&query=${location}`
   });
   setTimeout(() => {
     emitSockets('call', { phoneNumber: phoneNumber });
@@ -54,6 +70,8 @@ const sendSMS = (data) => {
 }
 
 const sendMail = (data) => {
+  const currentTime = getCurrentTime();
+  const location = extractLocation(data.location);
   let transporter = nodeMailer.createTransport({
     host: 'smtp.gmail.com',
     port: 465,
@@ -69,14 +87,13 @@ const sendMail = (data) => {
     subject: '[Cảnh báo] Phát hiện còn người trên xe khi xe đã đóng khóa cửa', // Subject line
     text: '', // plain text body
     html: `
-      <b>Phát hiện nguy hiểm trên xe có biển số ${data.vid} tại trường ${data.schoolName} vào lúc ${new Date()} </b>
+      <b>Phát hiện nguy hiểm trên xe có biển số ${data.vid} tại trường ${data.schoolName} vào lúc ${currentTime.time} ngày ${currentTime.date} </b>
       <br> <p>Vui lòng báo với người có trách nhiệm quản lý gần đó để kiểm tra !</p> <br>
+      <br> <p>Vị trí : ${location} </p>
+      <br> <p>Click vào link để xem cụ thể vị trí trên bản đồ : https://www.google.com/maps/search/?api=1&query=${location} </p> 
       <br> <br> <p> Vui lòng không phản hồi tin nhắn này vì đây là tin nhắn tự động từ hệ thống SafeKid </p> 
-      <br> <p>Vị trí : ${extractLocation(data.location)} </p>
-      <br> <p>Click vào link để xem cụ thể vị trí trên bản đồ : https://www.google.com/maps/search/?api=1&query=${extractLocation(data.location)} </p> 
     ` // html body
   };
-  // console.log('MAIL: ', data);
   transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
       return console.log(error);
@@ -87,9 +104,8 @@ const sendMail = (data) => {
 
 /*
   TEST :
-  http://localhost:7777/upload?vehicleId=v1&schoolId=school_1&apiKey=F72FD054C190F505B93F09690BA99C5B&isHasPerson=1&location=28.6139,77.2090
-  https://nhom-khkt-hiep-phuoc.herokuapp.com/upload?vehicleId=v1&schoolId=school_1&apiKey=F72FD054C190F505B93F09690BA99C5B&isHasPerson=1
-  https://nhom-khkt-hiep-phuoc.herokuapp.com/upload?apiKey=F72FD054C190F505B93F09690BA99C5B&vehicleId=v1&schoolId=school_1&isHasPerson=1&location=1,10.755894,106.941180
+  localhost:1235/upload?apiKey=F72FD054C190F505B93F09690BA99C5B&vehicleId=v1&schoolId=school_1&isHasPerson=1&location=1,10.749993,106.9422482
+  https://nhom-khkt-hiep-phuoc.herokuapp.com/upload?apiKey=F72FD054C190F505B93F09690BA99C5B&vehicleId=v1&schoolId=school_1&isHasPerson=1&location=1,10.749993,106.9422482
 */
 router.get('/upload', (req, res, next) => {
   var vehicleId = req.query.vehicleId || '';
@@ -129,9 +145,17 @@ router.get('/upload', (req, res, next) => {
             date: new Date(),
             location: location,
           };
-          emitSockets('alert', { vehicleId: vid, schoolId: schoolName, isHasPerson: isHasPerson, data: _data });
+          emitSockets('alert', {
+            vid: vid,
+            schoolName: schoolName,
+            isHasPerson: isHasPerson,
+            data: _data,
+            location: extractLocation(location),
+            currentTime: getCurrentTime(),
+          });
+          const currentTime = getCurrentTime();
           if (isHasPerson === 'true') {
-            console.log(new Date(), extractLocation(_data.location));
+            console.log(`${currentTime.time} ${currentTime.date}`, extractLocation(_data.location));
             if (isOkToSendSMS()) {
               sendMail(_data);
               sendSMS(_data);
@@ -140,7 +164,7 @@ router.get('/upload', (req, res, next) => {
           res.json({ status: 1, message: 'ok!' });
         }
         catch {
-          res.json({ status: 0, error: { message: 'vehicleId or schoolId is wrong!' } });
+          res.json({ status: 0, error: { message: 'Something is wrong!' } });
         }
       } else {
         res.json({ status: 0, error: { message: 'vehicleId or schoolId is wrong!' } });
