@@ -82,7 +82,7 @@ const sendMail = (data) => {
     }
   });
   let mailOptions = {
-    from: '"SafeKid system" <helonesecure@gmail.com>', // sender address
+    from: `"SafeKid system" <${USER_GMAIL}>`, // sender address
     to: SENT_TO_GMAIL, // list of receivers
     subject: '[Cảnh báo] Phát hiện còn người trên xe khi xe đã đóng khóa cửa', // Subject line
     text: '', // plain text body
