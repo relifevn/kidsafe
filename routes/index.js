@@ -94,7 +94,6 @@ const sendMail = (data) => {
       <br> <br> <p> Vui lòng không phản hồi tin nhắn này vì đây là tin nhắn tự động từ hệ thống SafeKid </p> 
     ` // html body
   };
-  console.log(mailOptions)
   transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
       return console.log(error);
