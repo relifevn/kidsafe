@@ -72,7 +72,7 @@ const sendSMS = (data) => {
 const transporter = nodeMailer.createTransport({
   host: 'smtp.gmail.com',
   port: 465,
-  secure: false,
+  secure: true,
   auth: {
     user: USER_GMAIL,
     pass: PASS_GMAIL
