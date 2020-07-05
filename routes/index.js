@@ -69,18 +69,19 @@ const sendSMS = (data) => {
   }, 2000);
 }
 
+const transporter = nodeMailer.createTransport({
+  host: 'smtp.gmail.com',
+  port: 465,
+  secure: false,
+  auth: {
+    user: USER_GMAIL,
+    pass: PASS_GMAIL
+  }
+});
+
 const sendMail = (data) => {
   const currentTime = getCurrentTime();
   const location = extractLocation(data.location);
-  let transporter = nodeMailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 465,
-    secure: true,
-    auth: {
-      user: USER_GMAIL,
-      pass: PASS_GMAIL
-    }
-  });
   let mailOptions = {
     from: `"SafeKid system" <${USER_GMAIL}>`, // sender address
     to: SENT_TO_GMAIL, // list of receivers
