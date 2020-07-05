@@ -4,12 +4,12 @@ const database = require('../routes/database');
 const emitSockets = require('../websocket/socket').emitSockets;
 const nodeMailer = require('nodemailer');
 
-const phoneNumber = '0387358924'; // '0387358924'; // '0979535659';
+const phoneNumber = '0981928735'; // '0387358924'; // '0979535659';
 const API_KEY = 'F72FD054C190F505B93F09690BA99C5B';
 const TITLE = 'KIDSAFE';
 const VERSION = 'v0.0.2';
-const USER_GMAIL = 'safekid.system.hp@gmail.com';
-const PASS_GMAIL = 'MTIzNDU2';
+const USER_GMAIL = 'helonesecure@gmail.com';
+const PASS_GMAIL = '50BD1167F23A9AD9673FD350B64B21BC';
 const SENT_TO_GMAIL = 'thcshiepphuockhkt@gmail.com'; // 'nhomkhkthiepphuoc123@gmail.com';
 const MINUTE_LIMIT = 2;
 
