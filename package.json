@@ -1,6 +1,6 @@
 {
   "name": "kid-safe",
-  "version": "0.1.1",
+  "version": "1.0.0",
   "description": "Project Kid Safe",
   "main": "index.js",
   "scripts": {
