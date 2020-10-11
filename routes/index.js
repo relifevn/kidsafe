@@ -13,7 +13,8 @@ const PASS_GMAIL = 'khkt2020';
 const SENT_TO_GMAIL = 'thcshiepphuockhkt@gmail.com'; // 'nhomkhkthiepphuoc123@gmail.com';
 const MINUTE_LIMIT = 2;
 
-const phoneNumberFlame = '0387358924'
+const phoneNumberFlame = '0387544215'
+const SENT_TO_GMAIL_FLAME = 'linhdangkhanh8@gmail.com'
 
 Date.prototype.addHours = function (h) {
   this.setTime(this.getTime() + (h * 60 * 60 * 1000));
@@ -35,7 +36,7 @@ const extractLocation = (location) => {
   if (location) {
     const t = location.split(',');
     if (t && t.length >= 3) {
-      return `10.8517441,106.6276239}`; // `${t[1]},${t[2]}`
+      return `10.8517441,106.6276239`; // `${t[1]},${t[2]}`
     }
   } else {
     return '';
@@ -118,6 +119,23 @@ const sendMail = (data) => {
   });
 }
 
+const sendMailFlame = (data) => {
+  const currentTime = getCurrentTime();
+  let mailOptions = {
+    from: `"Flame detector system" <${USER_GMAIL}>`, // sender address
+    to: SENT_TO_GMAIL_FLAME, // list of receivers
+    subject: 'Detect flame', // Subject line
+    text: '', // plain text body
+    html: `Detect flame at ${currentTime.time} ${currentTime.date}`
+  };
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      return console.log(error);
+    }
+    console.log('Message %s sent: %s', info.messageId, info.response);
+  });
+}
+
 /*
   TEST :
   localhost:1235/upload?apiKey=F72FD054C190F505B93F09690BA99C5B&vehicleId=v1&schoolId=school_1&isHasPerson=1&location=1,10.749993,106.9422482
@@ -191,8 +209,12 @@ router.get('/upload', (req, res, next) => {
 
 });
 
+sendMailFlame()
+
 router.get('/flame-detect', (req, res, next) => {
   sendSMSFlame({})
+  sendMailFlame({})
+  res.json({status: 'success'})
 })
 
 router.get('/', (req, res, next) => {
