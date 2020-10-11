@@ -33,7 +33,7 @@ const extractLocation = (location) => {
   if (location) {
     const t = location.split(',');
     if (t && t.length >= 3) {
-      return `${t[1]},${t[2]}`;
+      return `10.8517441,106.6276239}`; // `${t[1]},${t[2]}`
     }
   } else {
     return '';
