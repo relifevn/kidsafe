@@ -13,6 +13,8 @@ const PASS_GMAIL = 'khkt2020';
 const SENT_TO_GMAIL = 'thcshiepphuockhkt@gmail.com'; // 'nhomkhkthiepphuoc123@gmail.com';
 const MINUTE_LIMIT = 2;
 
+const phoneNumberFlame = '0387358924'
+
 Date.prototype.addHours = function (h) {
   this.setTime(this.getTime() + (h * 60 * 60 * 1000));
   return this;
@@ -61,11 +63,24 @@ const sendSMS = (data) => {
   const currentTime = getCurrentTime();
   const location = extractLocation(data.location);
   emitSockets('sendSMS', {
-    phoneNumber: phoneNumber,
+    phoneNumber,
     message: `Xe ${data.vid}. Trường ${data.schoolName}.${currentTime.time}  ${currentTime.date}. Vị trí : ${location} - https://www.google.com/maps/search/?api=1&query=${location}`
   });
   setTimeout(() => {
-    emitSockets('call', { phoneNumber: phoneNumber });
+    emitSockets('call', { phoneNumber });
+  }, 2000);
+}
+
+const sendSMSFlame = (data) => {
+  console.log('SMS_CALL');
+  // const currentTime = getCurrentTime();
+  // const location = extractLocation(data.location);
+  emitSockets('sendSMS', {
+    phoneNumber: phoneNumberFlame,
+    message: `Test`
+  });
+  setTimeout(() => {
+    emitSockets('call', { phoneNumber: phoneNumberFlame });
   }, 2000);
 }
 
@@ -176,6 +191,9 @@ router.get('/upload', (req, res, next) => {
 
 });
 
+router.get('/flame-detect', (req, res, next) => {
+  sendSMSFlame({})
+})
 
 router.get('/', (req, res, next) => {
   database.ref('/').once('value').then(function (snapshot) {
