@@ -8,8 +8,8 @@ const phoneNumber = '0981928735';  // '0387358924'; // '0979535659';
 const API_KEY = 'F72FD054C190F505B93F09690BA99C5B';
 const TITLE = 'KIDSAFE';
 const VERSION = 'v0.0.2';
-const USER_GMAIL = 'thcshiepphuockhkt@gmail.com';
-const PASS_GMAIL = 'Tryeverything123456';
+const USER_GMAIL = 'thcshiepphuoc2020@gmail.com';
+const PASS_GMAIL = 'khkt2020';
 const SENT_TO_GMAIL = 'thcshiepphuockhkt@gmail.com'; // 'nhomkhkthiepphuoc123@gmail.com';
 const MINUTE_LIMIT = 2;
 
